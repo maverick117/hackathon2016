@@ -16,7 +16,7 @@ class myHandler(BaseHTTPRequestHandler):
 	#Handler for the GET requests
 	def do_GET(self):
 		if self.path=="/":
-			self.path=os.path.join(sys.path[0],"index.html")
+			self.path="/index.html"
                 elif self.path == "/rec":
                     try:
                         f = open(os.path.join(sys.path[0], 'data.json'))
@@ -32,6 +32,8 @@ class myHandler(BaseHTTPRequestHandler):
 		try:
 			#Check the file extension required and
 			#set the right mime type
+                        
+                        self.path = self.path[1:]
 
 			sendReply = False
 			if self.path.endswith(".html"):
