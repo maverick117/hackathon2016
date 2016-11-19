@@ -2,10 +2,12 @@
 import requests
 import json
 import time
+import os
+import sys
 
 # POST data
 print('HTTP Client started')
-with open('conf.json') as conf_file:
+with open(os.path.join(sys.path[0],'conf.json')) as conf_file:
     conf = json.load(conf_file)
 print('Current Configuration')
 print(conf)
@@ -14,7 +16,7 @@ port = conf['server_port']
 #r = requests.post('http://192.168.199.191:8080/send',json=data)
 while True:
     try:
-        with open('stat.json') as data_file:
+        with open(os.path.join(sys.path[0],'stat.json')) as data_file:
             data = json.load(data_file)
         print(data)
         print('POST in progress:')
@@ -22,7 +24,7 @@ while True:
         print('GET in progress:')
         r_g = requests.get('http://'+ip.strip()+':'+port.strip()+'/rec')
         print(r_g.json())
-        with open('data.json',mode='w') as data_file:
+        with open(os.path.join(sys.path[0],'data.json'),mode='w') as data_file:
             json.dump(r_g.json(),data_file)
         time.sleep(5)
     except requests.exceptions.ConnectionError:

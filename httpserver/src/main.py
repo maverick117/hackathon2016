@@ -4,6 +4,8 @@ from os import curdir, sep
 import cgi
 import json
 import time
+import os
+import sys
 
 PORT_NUMBER = 8080
 
@@ -16,7 +18,7 @@ class myHandler(BaseHTTPRequestHandler):
 		if self.path=="/":
 			self.path="/index.html"
                 elif self.path == "/rec":
-                    f = open(curdir + sep + 'data.json')
+                    f = open(os.path.join(sys.path[0], 'data.json'))
                     self.send_response(200)
                     self.send_header('Content-type','text/html')
                     self.end_headers()
@@ -47,7 +49,7 @@ class myHandler(BaseHTTPRequestHandler):
 
 			if sendReply == True:
 				#Open the static file requested and send it
-				f = open(curdir + sep + self.path) 
+				f = open(os.path.join(sys.path[0], self.path)) 
 				self.send_response(200)
 				self.send_header('Content-type',mimetype)
 				self.end_headers()
@@ -70,21 +72,13 @@ class myHandler(BaseHTTPRequestHandler):
                 
         	data = json.loads(self.data_string)
                 data['Client_IP'] = self.client_address
-                #data['time_of_post'] = time.time()
-
-                #print data
-        	#with open("post.json", "w") as outfile:
-            	#	json.dump(data, outfile)
-        	#print "{}".format(data)
-
-                # TODO: Put POST data in database
                 try:                
-                    with open('data.json') as data_file:
+                    with open(os.path.join(sys.path[0],'data.json')) as data_file:
                         database = json.load(data_file)
                 except:
                     database = {}
                 database[data["id"]] = data
-                with open('data.json',mode='w') as data_file:
+                with open(os.path.join(sys.path[0],'data.json'),mode='w') as data_file:
                     json.dump(database,data_file)
 
                 self.analyze(database)
