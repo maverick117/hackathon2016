@@ -16,7 +16,7 @@ class myHandler(BaseHTTPRequestHandler):
 	#Handler for the GET requests
 	def do_GET(self):
 		if self.path=="/":
-			self.path="/index.html"
+			self.path=os.path.join(sys.path[0],"index.html")
                 elif self.path == "/rec":
                     f = open(os.path.join(sys.path[0], 'data.json'))
                     self.send_response(200)
