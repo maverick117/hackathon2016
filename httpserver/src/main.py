@@ -15,7 +15,15 @@ class myHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		if self.path=="/":
 			self.path="/index.html"
+                elif self.path == "/rec":
+                    f = open(curdir + sep + 'data.json')
+                    self.send_response(200)
+                    self.send_header('Content-type','text/html')
+                    self.end_headers()
+                    self.wfile.write(f.read())
+                    f.close()
 
+                    return
 		try:
 			#Check the file extension required and
 			#set the right mime type
