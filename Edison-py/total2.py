@@ -30,7 +30,7 @@ def ChangeDisplay2(_text):
     myLcd.setCursor(1,0)
     myLcd.write(_text+space)
 
-ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1)
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 myLcd = lcd.Jhd1313m1(0, 0x3E, 0x62)
 myLcd.setCursor(0,0)
 myDistInterrupter1 = upmRfr359f.RFR359F(2)
@@ -46,47 +46,37 @@ try:
         response = ser.readline()
         if ';' not in response:
             continue
-        try:
-            with open(os.path.join(sys.path[0],'stat.json')) as data_file:
-                data = json.load(data_file)
-        except IOError:
-            with open(os.path.join(sys.path[0],'stat.json'),'w') as data_file:
-                json.dump({},data_file)
-
         res=response.split(';')
-        print data
         print res
         if (myDistInterrupter1.objectDetected() and myDistInterrupter2.objectDetected()):
             ChangeDisplay1('red','Full')
-            print 'Full'
-            data['isfull']=1
+            print "Full"
         else:
-            data['isfull']=0
             if res[0]=='True':
                 print 't'
                 ChangeDisplay1('yellow','trash out')
             else:
                 print 'f'
                 ChangeDisplay1('green','OK')
-            ChangeDisplay2('temp='+str(int(float(res[2])))+' '+'humi='+str(int(float(res[3]))))
-            data['flowrate']=int(res[1])
-            data['temp']=int(float(res[2]))
-            data['humi']=int(float(res[3]))
+            ChangeDisplay2('Flowrate='+str(int(res[1])))
+        try:
+            with open(os.path.join(sys.path[0],'stat.json')) as data_file:
+                data = json.load(data_file)
+                print data
+                #changevalue here
+
+        except IOError:
+            with open(os.path.join(sys.path[0],'stat.json'),'w') as data_file:
+                json.dump({},data_file)
+
+        data['emergency_type']='e?'
+        
+
 
         try:
             with open(os.path.join(sys.path[0],'stat.json'),'w') as data_file:
-                print data
                 json.dump(data,data_file)
         except Exception as e:
             print 'err',e
-        #try:
-        #    with open(os.path.join(sys.path[0],'stat.json'),'r+') as data_file:
-        #        data = json.load(data_file)
-        #        print data
-        #        #changevalue here
-        #        json.dump(data,data_file)
-        #    #data_file.close()
-        #except Exception as e:
-        #    print 'err',e
 except KeyboardInterrupt:
     ser.close()

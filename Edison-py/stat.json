@@ -1,0 +1,11 @@
+{
+	"id": "0x01",
+	"longtitude": "+121.5952285",
+	"latitude": "+31.1767925",
+	"elevation": 2,
+	"emergency_type": 0,
+	"isfull": 0,
+	"flowrate": 0,
+	"temp": 0,
+	"humi": 0
+}

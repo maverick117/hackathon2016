@@ -25,6 +25,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="jhd\jhd1313m1-lcd.py" />
+    <Compile Include="main.py" />
     <Compile Include="rpr\rpr220.py" />
     <Compile Include="serial\serial_text.py" />
     <Compile Include="total.py" />
@@ -34,6 +35,10 @@
     <Folder Include="IRDisInter\" />
     <Folder Include="rpr\" />
     <Folder Include="serial" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="conf.json" />
+    <Content Include="stat.json" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
