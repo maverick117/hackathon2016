@@ -156,25 +156,30 @@ text-align:justify;
   width:96%;
 }
 tr{
-	top:4px;
+	text-align:center;top:4px;
 }
-th{	height: 60px;
+th{	
+	text-align:center;
+	height: 90px;
 	width:165px;
     background-color:rgba(93,197,59,0.9);
-    border: 2px solid rgba(255,255,255,1);
-    border-bottom: 4px solid rgba(255,255,255,1);
-    font-size: 22px;}
+    border: 6px solid rgba(255,255,255,1);
+    border-bottom: 12px solid rgba(255,255,255,1);
+    font-size: 33px;}
 }
-td.cl1{	height: 40px;
+td{
+text-align:center;
+}
+td.cl1{	height: 60px;
 	width:165px;
     background-color:rgba(169,224,140,0.9);
-    border: 2px solid rgba(255,255,255,1);
-    font-size: 16px;}
-td.cl2{	height: 40px;
+    border: 6px solid rgba(255,255,255,1);
+    font-size: 24px;}
+td.cl2{	height: 60px;
 	width:165px;
     background-color:rgba(130,193,96,0.9);
-    border: 2px solid rgba(255,255,255,1);
-    font-size: 16px;}
+    border: 6px solid rgba(255,255,255,1);
+    font-size: 24px;}
 
 
 
@@ -184,46 +189,63 @@ td.cl2{	height: 40px;
 <body>
    <table style="">
 <tr>
+<th></th>
 <th>1</th>
-<th>1</th>
-<th>1</th></tr>
+<th>2</th>
+<th>3</th></tr>
 <tr>
-<td class="cl1" id="1,1">1</td>
-<td class="cl1" id="1,2">1</td>
-<td class="cl1">1</td></tr>
+<td class="cl1" >Status</td>
+<td class="cl1" id="1">1</td>
+<td class="cl1" >-</td>
+<td class="cl1">-</td></tr>
+<tr>
+
+<td class="cl2">Filling Rate</td>
+<td class="cl2" id="2">1</td>
+<td class="cl2">-</td>
+<td class="cl2">-</td></tr>
+
+<tr>
+<td class="cl1"></td>
+<td class="cl1" id="3">1</td>
+<td class="cl1" >-</td>
+<td class="cl1">-</td></tr>
 <tr>
 <td class="cl2">1</td>
-<td class="cl2">1</td>
-<td class="cl2">1</td></tr>
-<table>
+<td class="cl2" id="4">1</td>
+<td class="cl2">-</td>
+<td class="cl2">-</td></tr>
+</table>
 </body>
-<script type="text/javascript" src="/jquery/jquery.js"></script>
+<script type="text/javascript" src="./jquery.js"></script>
 <script type="text/javascript" >
 init();
+
 function init()
 {
-		document.getElementById("1,1").innerHTML="a";
-	Run();}
+	//	document.getElementById("1").innerHTML="a";
+	Run();
+}
 function Run()
 {
-	document.getElementById("1,1").innerHTML="a";
-	var Data={id:[]	};
-	var root=".\stat.json";
-	 $.getJSON(root,function(result){
+var Data={id:0,volume:0};
+	//document.getElementById("1").innerHTML="b";
+	
+	 $.getJSON("./stat.json",function(result){
 
-			 document.getElementById("1,1").innerHTML="b";
-		  	 Data.id=result.id;
+		//	 document.getElementById("1").innerHTML="c";
+			 Data.id=result.id;
+			Data.package_type=result.package_type;
+		  	 Data.volume=result.volume;
+			Data.state_code=result.state_code;
+			Data.rate=result.rate;
   	  });
 	//Data=ParseJson(json);
-//	document.getElementById("1,1").innerHTML=Data.id;
-	setTimeout("Run()",100);
+	document.getElementById("1").innerHTML=Data.id;
+//	setTimeout("Run()",100);
 
 }
-function ParseJson(json)
-{
-	return eval("("+json+")");
-}
+
 </script>
    
 </html>
-
