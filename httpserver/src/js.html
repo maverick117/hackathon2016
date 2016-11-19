@@ -23,38 +23,45 @@ function initMap() {
     zoom: 8
   });
   var Green = "009D44",Red="9D0711",Orange="F68915";
-    var pinRed = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Red,
+     pinRed = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Red,
         new google.maps.Size(21, 34),
         new google.maps.Point(0,0),
         new google.maps.Point(10, 34));
-    var pinOrange = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Orange,
+     pinOrange = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Orange,
         new google.maps.Size(21, 34),
         new google.maps.Point(0,0),
         new google.maps.Point(10, 34));
-    var pinGreen = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Green,
+     pinGreen = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Green,
         new google.maps.Size(21, 34),
         new google.maps.Point(0,0),
         new google.maps.Point(10, 34));
-    var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+     pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
         new google.maps.Size(40, 37),
         new google.maps.Point(0, 0),
         new google.maps.Point(12, 35));
 	for(var i=0;i<Num;i++){pintype.push(pinGreen);Pos.push({lat:31.22, lng: 120.644});}
-	Run();
+for (var i=0;i<Num;i++)
+     	{
+		addMarker(Pos[i],map,pintype[i],pinShadow);
+	}
+	setTimeout("Run()",1000);
 
 }
 function Run()
 {
-var Data={id:0,volume:0};
+var Data={id:0,volume:0,emergency_type:0,isfull:0};
 	//document.getElementById("1").innerHTML="b";
-
-	 $.getJSON("./stat.json",function(result){
-
+	
+	 $.getJSON("./data.json",function(result){
 		//	 document.getElementById("1").innerHTML="c";
 			 for(var i=0;i<Num;i++)
 			//Pos[Data.id[i]]={lat:result.latitude[i],lng:result.longtitude[i]};
-			if (Data.emergency_type[i] == 1) pintype[Data.id[i]]=pinRed;
-			else if(Data.isfull[i]==1)pintype[Data.id[i]]=pinOrange;
+			if (result.emergency_type[i] == 1) pintype[Data.id[i]]=pinRed;
+			else if(result.isfull[i]==1)pintype[Data.id[i]]=pinOrange;
+	for (var i=0;i<Num;i++)
+     	{
+		addMarker(Pos[i],map,pintype[i],pinShadow);
+	}
 	for (var i=0;i<Num;i++)
      	{
 		array[i].setIcon(pintype[i]);
@@ -63,7 +70,7 @@ var Data={id:0,volume:0};
 			
   	  });
 	//Data=ParseJson(json);
-	setTimeout("Run()",10000);
+	setTimeout("Run()",1000);
 	//for(var i=0;i<array.length;i++)
 	//{
 	//	array[i].setMap=(null);
