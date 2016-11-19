@@ -18,7 +18,10 @@ class myHandler(BaseHTTPRequestHandler):
 		if self.path=="/":
 			self.path=os.path.join(sys.path[0],"index.html")
                 elif self.path == "/rec":
-                    f = open(os.path.join(sys.path[0], 'data.json'))
+                    try:
+                        f = open(os.path.join(sys.path[0], 'data.json'))
+                    except IOError:
+                        self.send_error(500,'Internal Server Error. Database could not be opened.')
                     self.send_response(200)
                     self.send_header('Content-type','text/html')
                     self.end_headers()
