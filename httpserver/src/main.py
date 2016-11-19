@@ -64,7 +64,6 @@ class myHandler(BaseHTTPRequestHandler):
                 if self.path!="/send":
 			self.send_response(403)
 			return
-        	print "in post method"
         	self.data_string = self.rfile.read(int(self.headers['Content-Length']))
                 #print self.data_string
 
