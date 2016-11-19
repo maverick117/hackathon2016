@@ -37,6 +37,15 @@ function initMap() {
         new google.maps.Point(12, 35));
      addMarker({lat: 31.22, lng: 121.48},map,pinRed,pinShadow)
 
+//	Run(.\data.json);
+
+}
+function Run(json)
+{
+	Data=ParseJson(json);
+	
+	setTimeout("Run(./data.json)",30000);
+
 }
 function addMarker(loc, ma,Icon,Shadow)
 {
@@ -51,6 +60,6 @@ function ParseJson(json)
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAOdlf83cvEbK76MzE4bKZwL6iMmv-cjQ&callback=initMap">
     </script>
-  </body>
+    </body>
 </html>
 
