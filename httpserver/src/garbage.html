@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>igem2016:ShanghaiTech</title>
+    <title>ShanghaiTech:GeEkcited</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://2016.igem.org/Template:ShanghaitechChina/css/bootstrap?action=raw&ctype=text/css">
@@ -22,7 +23,7 @@ html{
 	margin:0;
 	padding:0;
 	width:100%;
-	background-color:#242424;
+	background-color:#ffffff;
 }
 body{
 	width:100%;
@@ -86,6 +87,12 @@ body,td,th {
 text-align:justify;
     padding: 10px 70px 30px 70px;
 }
+.imgnav {
+    margin-top:0px;
+    width:85%;
+    margin-left:2%;
+    border-radius: 0 0 10px 10px;
+}
 
 .contentBorder {
     border: 1px solid #aaaaaa;
@@ -132,15 +139,15 @@ text-align:justify;
     margin-left:15px;
 }
 #sidebar{
-    right:0px;
+    left:0px;
     top:90px;
     position:fixed;
     width:165px;
-    background-color:rgba(255,255,255,0.9);
+    background-color:rgba(0,0,0,0.9);
     border-radius: 5px;
 }
 
-#sidebar > li a{   color:black;
+#sidebar > tr a{   color:black;
    font-size:16px;
 }
 
@@ -155,75 +162,45 @@ text-align:justify;
 .content{
   width:96%;
 }
-tr{
-	top:4px;
-}
-th{	height: 60px;
-	width:165px;
-    background-color:rgba(93,197,59,0.9);
-    border: 2px solid rgba(255,255,255,1);
-    border-bottom: 4px solid rgba(255,255,255,1);
-    font-size: 22px;}
-}
-td.cl1{	height: 40px;
-	width:165px;
-    background-color:rgba(169,224,140,0.9);
-    border: 2px solid rgba(255,255,255,1);
-    font-size: 16px;}
-td.cl2{	height: 40px;
-	width:165px;
-    background-color:rgba(130,193,96,0.9);
-    border: 2px solid rgba(255,255,255,1);
-    font-size: 16px;}
 
 
 
 </style>
+<nav class="navbar navbar-inverse navbar-fixed-top" style="margin-top:0px;text-align:center;background-color:rgba(233,233,233,0.8);border:1px rgba(0, 0, 0, 0.35);box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.35);">
+    <div class="container-fluid">
 
-</head>
-<body>
-   <table style="">
-<tr>
-<th>1</th>
-<th>1</th>
-<th>1</th></tr>
-<tr>
-<td class="cl1" id="1,1">1</td>
-<td class="cl1" id="1,2">1</td>
-<td class="cl1">1</td></tr>
-<tr>
-<td class="cl2">1</td>
-<td class="cl2">1</td>
-<td class="cl2">1</td></tr>
-<table>
-</body>
-<script type="text/javascript" src="/jquery/jquery.js"></script>
-<script type="text/javascript" >
-init();
-function init()
-{
-		document.getElementById("1,1").innerHTML="a";
-	Run();}
-function Run()
-{
-	document.getElementById("1,1").innerHTML="a";
-	var Data={id:[]	};
-	var root=".\stat.json";
-	 $.getJSON(root,function(result){
+        <!-- Logo -->
+	<img  class="navbar-right" src=".\brand.png" style="margin-top:0.2%;width:11.5%"/>	
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" style="font-size:28px;margin-top:2%;color:#333333">GeEkcited</a>
+	   <a class="navbar-right" style="font-size:22px;margin-top:8%;color:#555555">GeEkcited</a>
+        </div>
 
-			 document.getElementById("1,1").innerHTML="b";
-		  	 Data.id=result.id;
-  	  });
-	//Data=ParseJson(json);
-//	document.getElementById("1,1").innerHTML=Data.id;
-	setTimeout("Run()",100);
 
-}
-function ParseJson(json)
-{
-	return eval("("+json+")");
-}
-</script>
-   
+
+
+    </div>
+</nav>
+
+<html>
+  <head>
+    <style type="text/css">
+      html, body { height: 100%; margin: 0; padding: 0; }
+      #map { height: 100%; }
+    </style>
+  </head>
+  <body>
+
+  <div style="border: 1px solid #cccccc;margin-left:0.5%;box-shadow: 2px 2px 6px 2px rgba(0, 0, 0, 0.35);margin-top:3.7%;width:39%;height:92%;float: left;position:fixed"> <iframe style="margin-left:0%;margin-top:0%;width:100%;height:100%" src="./list.html">
+     </iframe></div>
+     <div style="border: 1px solid #cccccc;box-shadow: 2px 2px 6px 2px rgba(0, 0, 0, 0.35);margin-top:3.7%;margin-left:41%;width:60%;height:92%;position:fixed;">
+	    <iframe style="margin-top:0%;margin-left:0%;width:100%;height:100%;" src="./js.html">
+     </iframe></div>	
+  </body>
+
 </html>
 
