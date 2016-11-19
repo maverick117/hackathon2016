@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# Author: Brendan Le Foll <brendan.le.foll@intel.com>
-# Copyright (c) 2014 Intel Corporation.
+# Author: Zion Orent <zorent@ics.com>
+# Copyright (c) 2015 Intel Corporation.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,31 +21,39 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from upm import pyupm_i2clcd as lcd
-import time
+from __future__ import print_function
+import time, sys, signal, atexit
+from upm import pyupm_rpr220 as upmRpr220
 
 def main():
-    # Initialize Jhd1313m1 at 0x3E (LCD_ADDRESS) and 0x62 (RGB_ADDRESS)
-    myLcd = lcd.Jhd1313m1(0, 0x3E, 0x62)
+    # This example uses a simple method to determine current status
 
-    myLcd.setCursor(0,0)
-    # RGB Blue
-    #myLcd.setColor(53, 39, 249)
+    # Instantiate an RPR220 digital pin D2
+    # This was tested on the Grove IR Reflective Sensor
+    myReflectiveSensor = upmRpr220.RPR220(2)
 
-    # RGB Red
-    myLcd.setColor(255, 0, 0)
-    myLcd.setCursor(0,2)
-    myLcd.write('Error')
-    time.sleep(3)
-    myLcd.clear()
-    myLcd.setCursor(0,2)
-    myLcd.setColor(0,255,0)
-    myLcd.write('OK')
-    time.sleep(3)
-    myLcd.clear()
-    myLcd.setColor(255,185,15)
-    myLcd.write('Warning')
-    time.sleep(5)
+    ## Exit handlers ##
+    # This stops python from printing a stacktrace when you hit control-C
+    def SIGINTHandler(signum, frame):
+        raise SystemExit
+
+    # This lets you run code on exit,
+    # including functions from myReflectiveSensor
+    def exitHandler():
+        print("Exiting")
+        sys.exit(0)
+
+    # Register exit handlers
+    atexit.register(exitHandler)
+    signal.signal(signal.SIGINT, SIGINTHandler)
+
+    while(1):
+        if (myReflectiveSensor.blackDetected()):
+            print("Black detected")
+        else:
+            print("Black NOT detected")
+
+        time.sleep(.1)
+
 if __name__ == '__main__':
     main()
-

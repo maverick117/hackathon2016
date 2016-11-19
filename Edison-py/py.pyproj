@@ -21,12 +21,18 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IRDisInter\IRDI.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="jhd\jhd1313m1-lcd.py" />
+    <Compile Include="rpr\rpr220.py" />
     <Compile Include="serial\serial_text.py" />
     <Compile Include="total.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="jhd" />
+    <Folder Include="IRDisInter\" />
+    <Folder Include="rpr\" />
     <Folder Include="serial" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
