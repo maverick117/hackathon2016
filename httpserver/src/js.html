@@ -22,6 +22,14 @@ function initMap() {
     center: {lat:31.22, lng: 120.644},
     zoom: 8
   });
+PolyLine=new google.maps.Polyline({
+    path: [{lat:0,lng:0}],
+	map:map,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+	visible: true
+  });
   var Green = "009D44",Red="9D0711",Orange="F68915";
      pinRed = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Red,
         new google.maps.Size(21, 34),
@@ -44,24 +52,33 @@ for (var i=0;i<Num;i++)
      	{
 		addMarker(Pos[i],map,pintype[i],pinShadow);
 	}
+	
 	setTimeout("Run()",1000);
 
 }
+
 function Run()
 {
 var Data={id:0,volume:0,emergency_type:0,isfull:0};
 	//document.getElementById("1").innerHTML="b";
-	
+	var sum=0;
+	var list=[];
+PolyLine.setVisible(false);
 	 $.getJSON("./data.json",function(result){
 		//	 document.getElementById("1").innerHTML="c";
 			 for(var i=0;i<Num;i++)
 			//Pos[Data.id[i]]={lat:result.latitude[i],lng:result.longtitude[i]};
 			if (result.emergency_type[i] == 1) pintype[Data.id[i]]=pinRed;
-			else if(result.isfull[i]==1)pintype[Data.id[i]]=pinOrange;
+			else if(result.isfull[i]==1){
+pintype[Data.id[i]]=pinOrange;sum+=1;list.push(i);}
 	for (var i=0;i<Num;i++)
      	{
 		addMarker(Pos[i],map,pintype[i],pinShadow);
 	}
+	
+	dfs(0,list);
+	PolyLine.setPath(Path);
+	PolyLine.setVisible(true);
 	for (var i=0;i<Num;i++)
      	{
 		array[i].setIcon(pintype[i]);
@@ -77,6 +94,23 @@ var Data={id:0,volume:0,emergency_type:0,isfull:0};
 	//}
 	//Run();
 }
+function dfs(temp,list)
+{
+	var min=[99999999,-1];
+	if(list.length==0)return;	
+	for(var i=0;i<list.length;i++)
+	{
+		if ((Pos[list[i]].lat-temp.lat)*(Pos[list[i]].lat-temp.lat)*100000000+(Pos[list[i]].lng-temp.lng)*(Pos[list[i]].lng-temp.lng)*100000000<min[1])
+		{
+			min[0]=list[i];min[1]=(Pos[list[i]].lat-temp.lat)*(Pos[list[i]].lat-temp.lat)*100000000+(Pos[list[i]].lng-temp.lng)*(Pos[list[i]].lng-temp.lng)*100000000;
+		}
+	}
+	temp=list[i];	
+	Path.push(Pos[list[i]]);
+	dfs(temp,list.slice(i,i));
+	
+}
+
 function addMarker(loc, ma,Icon,Shadow)
 {
 var marker=new google.maps.Marker({position:loc,map:ma,icon: Icon,shadow: Shadow});
@@ -86,7 +120,7 @@ array.push(marker);
 	
     </script>
     <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAOdlf83cvEbK76MzE4bKZwL6iMmv-cjQ&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAOdlf83cvEbK76MzE4bKZwL6iMmv-cjQ&callback=initMap&libraries=drawing">
     </script>
     </body>
 </html>
