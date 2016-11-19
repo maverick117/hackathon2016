@@ -6,6 +6,8 @@ int crowd = 0;
 long denominator = 0;
 float index = 0;
 long distance, cm,duration;
+int loopTag = 0;
+int bufferArray[10]={};
 
 void setup()
 {
@@ -18,37 +20,40 @@ void setup()
 
 void loop()
 {
-  distance = get_distance();
-  byte state = digitalRead(sensorPin);
-  denominator += 1;
-  if(state == 1)
-  {
-    crowd += 1;
-    if(distance < 50){
-      digitalWrite(buzzerPin, HIGH);
+  bool judgeTrash;
+  for(int i=1; i<11; i++){
+    judgeTrash = find_trash();
+    bool judgePasserby = is_passerby();
+    denominator += 1;
+    if(judgePasserby)
+    {
+      crowd += 1;
+      if(judgeTrash){
+        bufferArray[i] = bufferArray[i-1] + 1;
+        if (i == 10 && bufferArray[i] > 5){
+          digitalWrite(buzzerPin, HIGH);
+          delay(100);
+          digitalWrite(buzzerPin, LOW);
+        }else{
+          delay(100);
+        }
+      }else{
+        delay(100);
+      }
+      //Serial.println("Somebody is in this area!");
+     }else{
       delay(100);
-      digitalWrite(buzzerPin, LOW);
-      delay(30);
-      digitalWrite(buzzerPin, HIGH);
-      delay(100);
-      digitalWrite(buzzerPin, LOW);
-    }else{
-      delay(200);
+      }
     }
-    //Serial.println("Somebody is in this area!");
-   }else{
-    delay(200);
-   }
-  if (denominator == 100){
-    index =  10.0 * (float)crowd / (float)denominator ;
-    crowd = 0;
-    denominator = 0;
-    delay(200);
-  }
-  communicate(distance,index);
+    if (denominator == 100){
+      index =  100.0 * (float)crowd / (float)denominator ;
+      crowd = 0;
+      denominator = 0;
+    }
+    communicate(judgeTrash,index);
 }
 
-int get_distance()
+bool find_trash()
 {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(5);
@@ -60,16 +65,36 @@ int get_distance()
   // duration is the time (in microseconds) from the sending
   // of the ping to the reception of its echo off of an object.
   pinMode(echoPin, INPUT);
-  duration = pulseIn(echoPin, HIGH);
+  duration = pulseIn(echoPin, HIGH , 10000);
+  if (duration == 0){
+    duration = 10000;
+  }
+    //Serial.println(duration);
  
   // convert the time into a distance
   cm = (duration/2) / 29.4;
-  return cm;
+
+  if (cm<50){
+    return true;
+  }else{
+    return false;
+  }
 }
 
-void communicate(int distance,int index)
+bool is_passerby()
 {
-  if (distance < 50){
+  byte state = digitalRead(sensorPin);
+  if (state == 1){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+
+void communicate(bool judgeTrash,int index)
+{
+  if (judgeTrash){
     Serial.print("True;");
   }else{
     Serial.print("False;");
