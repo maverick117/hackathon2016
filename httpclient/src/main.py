@@ -7,8 +7,12 @@ import sys
 
 # POST data
 print('HTTP Client started')
-with open(os.path.join(sys.path[0],'conf.json')) as conf_file:
-    conf = json.load(conf_file)
+try:
+    with open(os.path.join(sys.path[0],'conf.json')) as conf_file:
+        conf = json.load(conf_file)
+except IOError:
+    print('Could not open config file. Program terminated.')
+    exit(0)
 print('Current Configuration')
 print(conf)
 ip = conf['server_addr']
