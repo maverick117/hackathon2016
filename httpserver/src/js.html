@@ -65,19 +65,21 @@ PolyLine=new google.maps.Polyline({
 	setTimeout("Run()",1000);
 
 }
-
+list=[];
 function Run()
 {
+//list=[];
 var Data={id:0,volume:0,emergency_type:0,isfull:0};
 	//document.getElementById("1").innerHTML="b";
 	var sum=0;
-	var list=[];
+	
 PolyLine.setVisible(false);
 for(var i=0;i<array.length;i++)
 	{
 		array[i].setMap=(null);
 	}
 	array=[];
+list=[];
 var items=[];
 	//document.getElementById("1").innerHTML="b";
 	
@@ -88,16 +90,17 @@ var items=[];
   			});
 			 //alert(items[0].id);
 	//alert(items[0].emergency_type);
+
 	for(var i=0;i<items.length;i++)
 	{
 
 		if (items[i].emergency_type == 1) pintype[eval(items[i].id)]=pinRed;
 			else if(items[i].isfull==1){
-pintype[eval(items[i].id)]=pinOrange;sum+=1;if(eval(items[i].id)!=1)list.push(eval(items[i].id));}else pintype[eval(items[i].id)]=pinGreen;
+pintype[eval(items[i].id)]=pinOrange;if(eval(items[i].id)!=1)list.push(eval(items[i].id));}else pintype[eval(items[i].id)]=pinGreen;
 Pos[eval(items[i].id)]={lat:eval(items[i].latitude),lng:eval(items[i].longtitude)};	
 
 }
-	alert(list);
+	//alert(list);
 			 
   	  
 //Pos[Data.id[i]]={lat:result.latitude[i],lng:result.longtitude[i]};
@@ -107,7 +110,8 @@ Pos[eval(items[i].id)]={lat:eval(items[i].latitude),lng:eval(items[i].longtitude
 	//	addMarker(Pos[i],map,pintype[i],pinShadow);
 	//}
 	Path=[];
-	if(list.length>=1)dfs(1,list);
+//alert(list);
+	if(list.length>=1) dfs(list);
 
 	PolyLine.setPath(Path);
 	PolyLine.setVisible(true);
@@ -126,31 +130,41 @@ Pos[eval(items[i].id)]={lat:eval(items[i].latitude),lng:eval(items[i].longtitude
 	//}
 	//Run();
 }
-function dfs(temp,list1)
+function dfs(list)
 {
-	var min=[999999999,-1];
-alert(list1.length);
-	if(list1.length==1){
-	Path.push(Pos[list1[0]]);
-	Path.push(Pos[1]);
-		return;	
-	}
-//alert(list1);
-	for(var i=0;i<list1.length;i++)
+var list;
+temp=1;Path.push(Pos[1]);
+while(list.length>1){
+	var mi=[999999999,-1];
+//alert(list1.length);
+
+//alert(list);
+	
+	for(var i=0;i<list.length;i++)
 	{
-		if ((Pos[list1[i]].lat-Pos[temp].lat)*(Pos[list1[i]].lat-Pos[temp].lat)*1000000+(Pos[list1[i]].lng-Pos[temp].lng)*(Pos[list1[i]].lng-Pos[temp].lng)*1000000<min[0])
+		if ((Pos[list[i]].lat-Pos[temp].lat)*(Pos[list[i]].lat-Pos[temp].lat)*1000000+(Pos[list[i]].lng-Pos[temp].lng)*(Pos[list[i]].lng-Pos[temp].lng)*1000000<mi[0])
 		{
-			min[1]=i;min[0]=(Pos[list1[i]].lat-Pos[temp].lat)*(Pos[list1[i]].lat-Pos[temp].lat)*1000000+(Pos[list1[i]].lng-Pos[temp].lng)*(Pos[list1[i]].lng-Pos[temp].lng)*1000000;
+			mi[1]=i;mi[0]=(Pos[list[i]].lat-Pos[temp].lat)*(Pos[list[i]].lat-Pos[temp].lat)*1000000+(Pos[list[i]].lng-Pos[temp].lng)*(Pos[list[i]].lng-Pos[temp].lng)*1000000;
 		}
 	}
 //alert(min);
-	temp=list1[min[1]];	
+	temp=list[mi[1]];	
 //	alert(temp);
-	Path.push(Pos[temp]);
-var newlist=list1.remove(min[1]);
+	if(mi[1]==list.length-1)Path.push(Pos[list.pop()]);
+else{
+
+var part1 = list.slice(0, mi[1]);  
+        var part2 = list.slice(mi[1],list.length);  
+Path.push(Pos[part1.pop()]);
+       part1.concat(part2);
+	list=part1;
+}
 //alert(list);
-	dfs(temp,newlist);
+}
 	
+	Path.push(Pos[list[0]]);
+	Path.push(Pos[1]);
+//alert(Path);
 }
 
 function addMarker(loc, ma,Icon,Shadow)
