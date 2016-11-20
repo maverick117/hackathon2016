@@ -8,57 +8,175 @@
   </head>
   <body>
     <div id="map"></div>
+<script type="text/javascript" src="./jquery.js"></script>
     <script type="text/javascript">
 
 var map;
+var Num=3;
+var Pos=[];
+var pintype=[];
+var array=[];
+Path=[];
 
+Array.prototype.remove = function(index) {  
+    //检查index位置是否有效  
+    if(index >= 0 && index < this.length){  
+        var part1 = this.slice(0, index);  
+        var part2 = this.slice(index);  
+        part1.pop();  
+        return (part1.concat(part2));  
+    }  
+    return this;  
+};  
 function initMap() {
    
     map = new google.maps.Map(document.getElementById('map'), {
     center: {lat:31.22, lng: 120.644},
     zoom: 8
   });
+PolyLine=new google.maps.Polyline({
+    path: [{lat:0,lng:0}],
+	map:map,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+	visible: true
+  });
   var Green = "009D44",Red="9D0711",Orange="F68915";
-    var pinRed = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Red,
+     pinRed = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Red,
         new google.maps.Size(21, 34),
         new google.maps.Point(0,0),
         new google.maps.Point(10, 34));
-    var pinOrange = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Orange,
+     pinOrange = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Orange,
         new google.maps.Size(21, 34),
         new google.maps.Point(0,0),
         new google.maps.Point(10, 34));
-    var pinGreen = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Green,
+     pinGreen = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + Green,
         new google.maps.Size(21, 34),
         new google.maps.Point(0,0),
         new google.maps.Point(10, 34));
-    var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+     pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
         new google.maps.Size(40, 37),
         new google.maps.Point(0, 0),
         new google.maps.Point(12, 35));
-     addMarker({lat: 31.22, lng: 121.48},map,pinRed,pinShadow)
+	for(var i=0;i<=Num;i++){pintype.push(pinGreen);Pos.push({lat:31.22, lng: 120.644});}
 
-//	Run(.\data.json);
-
-}
-function Run(json)
-{
-	Data=ParseJson(json);
 	
-	setTimeout("Run(./data.json)",30000);
+	setTimeout("Run()",1000);
 
 }
+list=[];
+function Run()
+{
+//list=[];
+var Data={id:0,volume:0,emergency_type:0,isfull:0};
+	//document.getElementById("1").innerHTML="b";
+	var sum=0;
+	
+PolyLine.setVisible(false);
+for(var i=0;i<array.length;i++)
+	{
+		array[i].setMap=(null);
+	}
+	array=[];
+list=[];
+var items=[];
+	//document.getElementById("1").innerHTML="b";
+	
+	 $.getJSON("./data.json",function(data){
+		 items=[];
+			$.each( data, function( key, val ) {
+    			items.push(val);
+  			});
+			 //alert(items[0].id);
+	//alert(items[0].emergency_type);
+
+	for(var i=0;i<items.length;i++)
+	{
+
+		if (items[i].emergency_type == 1) pintype[eval(items[i].id)]=pinRed;
+			else if(items[i].isfull==1){
+pintype[eval(items[i].id)]=pinOrange;if(eval(items[i].id)!=1)list.push(eval(items[i].id));}else pintype[eval(items[i].id)]=pinGreen;
+Pos[eval(items[i].id)]={lat:eval(items[i].latitude),lng:eval(items[i].longtitude)};	
+
+}
+	//alert(list);
+			 
+  	  
+//Pos[Data.id[i]]={lat:result.latitude[i],lng:result.longtitude[i]};
+			
+	//for (var i=0;i<Num;i++)
+     	//{
+	//	addMarker(Pos[i],map,pintype[i],pinShadow);
+	//}
+	Path=[];
+//alert(list);
+	if(list.length>=1) dfs(list);
+
+	PolyLine.setPath(Path);
+	PolyLine.setVisible(true);
+	for (var i=1;i<=Num;i++)
+     	{
+		//array[i].setIcon(pintype[i]);
+		addMarker(Pos[i],map,pintype[i],pinShadow);
+	}
+			
+  	  });
+	//Data=ParseJson(json);
+	setTimeout("Run()",1000);
+	//for(var i=0;i<array.length;i++)
+	//{
+	//	array[i].setMap=(null);
+	//}
+	//Run();
+}
+function dfs(list)
+{
+var list;
+temp=1;Path.push(Pos[1]);
+while(list.length>1){
+	var mi=[999999999,-1];
+//alert(list1.length);
+
+//alert(list);
+	
+	for(var i=0;i<list.length;i++)
+	{
+		if ((Pos[list[i]].lat-Pos[temp].lat)*(Pos[list[i]].lat-Pos[temp].lat)*1000000+(Pos[list[i]].lng-Pos[temp].lng)*(Pos[list[i]].lng-Pos[temp].lng)*1000000<mi[0])
+		{
+			mi[1]=i;mi[0]=(Pos[list[i]].lat-Pos[temp].lat)*(Pos[list[i]].lat-Pos[temp].lat)*1000000+(Pos[list[i]].lng-Pos[temp].lng)*(Pos[list[i]].lng-Pos[temp].lng)*1000000;
+		}
+	}
+//alert(min);
+	temp=list[mi[1]];	
+//	alert(temp);
+	if(mi[1]==list.length-1)Path.push(Pos[list.pop()]);
+else{
+
+var part1 = list.slice(0, mi[1]);  
+        var part2 = list.slice(mi[1],list.length);  
+Path.push(Pos[part1.pop()]);
+       part1.concat(part2);
+	list=part1;
+}
+//alert(list);
+}
+	
+	Path.push(Pos[list[0]]);
+	Path.push(Pos[1]);
+//alert(Path);
+}
+
 function addMarker(loc, ma,Icon,Shadow)
 {
 var marker=new google.maps.Marker({position:loc,map:ma,icon: Icon,shadow: Shadow});
+array.push(marker);
 }
-function ParseJson(json)
-{
-	return eval("("+json+")");
-}
+
 	
     </script>
     <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAOdlf83cvEbK76MzE4bKZwL6iMmv-cjQ&callback=initMap">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAOdlf83cvEbK76MzE4bKZwL6iMmv-cjQ&callback=initMap&libraries=drawing">
     </script>
     </body>
 </html>
