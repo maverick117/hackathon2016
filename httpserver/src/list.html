@@ -362,9 +362,18 @@ var items=[];
 	for(var i=0;i<items.length;i++)
 	{
 		document.getElementById(items[i].id+"IP").innerHTML=items[i].Client_IP[0];
-		if(items[i].emergency_type!=0) document.getElementById(items[i].id+"Status").innerHTML=items[i].emergency_type;
-		else if(items[i].isfull) document.getElementById(items[i].id+"Status").innerHTML="FULL";
+		if(items[i].emergency_type!=0) 
+		{
+			document.getElementById(items[i].id+"Status").innerHTML=items[i].emergency_type;
+			document.getElementById(items[i].id+"Status").style.backgroundColor="#FF0000";
+			document.getElementById(items[i].id+"Status").style.color="#FFFFFF";
+		}
+		else{
+		document.getElementById(items[i].id+"Status").style.backgroundColor=document.getElementById(items[i].id+"FR").style.backgroundColor;
+	document.getElementById(items[i].id+"Status").style.color=document.getElementById(items[i].id+"FR").style.color;
+		if(items[i].isfull) document.getElementById(items[i].id+"Status").innerHTML="FULL";
 		else document.getElementById(items[i].id+"Status").innerHTML="NOT FULL";
+		}
 		document.getElementById(items[i].id+"Temp").innerHTML=items[i].temp+"℃";
 		document.getElementById(items[i].id+"FR").innerHTML=items[i].flowrate+"/s";
 		document.getElementById(items[i].id+"Hum").innerHTML=items[i].humi+"%";
