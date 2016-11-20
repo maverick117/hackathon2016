@@ -12,10 +12,22 @@
     <script type="text/javascript">
 
 var map;
-var Num=1;
+var Num=3;
 var Pos=[];
 var pintype=[];
 var array=[];
+Path=[];
+
+Array.prototype.remove = function(index) {  
+    //检查index位置是否有效  
+    if(index >= 0 && index < this.length){  
+        var part1 = this.slice(0, index);  
+        var part2 = this.slice(index);  
+        part1.pop();  
+        return (part1.concat(part2));  
+    }  
+    return this;  
+};  
 function initMap() {
    
     map = new google.maps.Map(document.getElementById('map'), {
@@ -47,11 +59,8 @@ PolyLine=new google.maps.Polyline({
         new google.maps.Size(40, 37),
         new google.maps.Point(0, 0),
         new google.maps.Point(12, 35));
-	for(var i=0;i<Num;i++){pintype.push(pinGreen);Pos.push({lat:31.22, lng: 120.644});}
-for (var i=0;i<Num;i++)
-     	{
-		addMarker(Pos[i],map,pintype[i],pinShadow);
-	}
+	for(var i=0;i<=Num;i++){pintype.push(pinGreen);Pos.push({lat:31.22, lng: 120.644});}
+
 	
 	setTimeout("Run()",1000);
 
@@ -64,25 +73,48 @@ var Data={id:0,volume:0,emergency_type:0,isfull:0};
 	var sum=0;
 	var list=[];
 PolyLine.setVisible(false);
-	 $.getJSON("./data.json",function(result){
-		//	 document.getElementById("1").innerHTML="c";
-			 for(var i=0;i<Num;i++)
-			//Pos[Data.id[i]]={lat:result.latitude[i],lng:result.longtitude[i]};
-			if (result.emergency_type[i] == 1) pintype[Data.id[i]]=pinRed;
-			else if(result.isfull[i]==1){
-pintype[Data.id[i]]=pinOrange;sum+=1;list.push(i);}
-	for (var i=0;i<Num;i++)
-     	{
-		addMarker(Pos[i],map,pintype[i],pinShadow);
+for(var i=0;i<array.length;i++)
+	{
+		array[i].setMap=(null);
 	}
+	array=[];
+var items=[];
+	//document.getElementById("1").innerHTML="b";
 	
-	dfs(0,list);
+	 $.getJSON("./data.json",function(data){
+		 items=[];
+			$.each( data, function( key, val ) {
+    			items.push(val);
+  			});
+			 //alert(items[0].id);
+	//alert(items[0].emergency_type);
+	for(var i=0;i<items.length;i++)
+	{
+
+		if (items[i].emergency_type == 1) pintype[eval(items[i].id)]=pinRed;
+			else if(items[i].isfull==1){
+pintype[eval(items[i].id)]=pinOrange;sum+=1;if(eval(items[i].id)!=1)list.push(eval(items[i].id));}else pintype[eval(items[i].id)]=pinGreen;
+Pos[eval(items[i].id)]={lat:eval(items[i].latitude),lng:eval(items[i].longtitude)};	
+
+}
+	alert(list);
+			 
+  	  
+//Pos[Data.id[i]]={lat:result.latitude[i],lng:result.longtitude[i]};
+			
+	//for (var i=0;i<Num;i++)
+     	//{
+	//	addMarker(Pos[i],map,pintype[i],pinShadow);
+	//}
+	Path=[];
+	if(list.length>=1)dfs(1,list);
+
 	PolyLine.setPath(Path);
 	PolyLine.setVisible(true);
-	for (var i=0;i<Num;i++)
+	for (var i=1;i<=Num;i++)
      	{
-		array[i].setIcon(pintype[i]);
-		//addMarker(Pos[i],map,pintype[i],pinShadow);
+		//array[i].setIcon(pintype[i]);
+		addMarker(Pos[i],map,pintype[i],pinShadow);
 	}
 			
   	  });
@@ -94,20 +126,30 @@ pintype[Data.id[i]]=pinOrange;sum+=1;list.push(i);}
 	//}
 	//Run();
 }
-function dfs(temp,list)
+function dfs(temp,list1)
 {
-	var min=[99999999,-1];
-	if(list.length==0)return;	
-	for(var i=0;i<list.length;i++)
+	var min=[999999999,-1];
+alert(list1.length);
+	if(list1.length==1){
+	Path.push(Pos[list1[0]]);
+	Path.push(Pos[1]);
+		return;	
+	}
+//alert(list1);
+	for(var i=0;i<list1.length;i++)
 	{
-		if ((Pos[list[i]].lat-temp.lat)*(Pos[list[i]].lat-temp.lat)*100000000+(Pos[list[i]].lng-temp.lng)*(Pos[list[i]].lng-temp.lng)*100000000<min[1])
+		if ((Pos[list1[i]].lat-Pos[temp].lat)*(Pos[list1[i]].lat-Pos[temp].lat)*1000000+(Pos[list1[i]].lng-Pos[temp].lng)*(Pos[list1[i]].lng-Pos[temp].lng)*1000000<min[0])
 		{
-			min[0]=list[i];min[1]=(Pos[list[i]].lat-temp.lat)*(Pos[list[i]].lat-temp.lat)*100000000+(Pos[list[i]].lng-temp.lng)*(Pos[list[i]].lng-temp.lng)*100000000;
+			min[1]=i;min[0]=(Pos[list1[i]].lat-Pos[temp].lat)*(Pos[list1[i]].lat-Pos[temp].lat)*1000000+(Pos[list1[i]].lng-Pos[temp].lng)*(Pos[list1[i]].lng-Pos[temp].lng)*1000000;
 		}
 	}
-	temp=list[i];	
-	Path.push(Pos[list[i]]);
-	dfs(temp,list.slice(i,i));
+//alert(min);
+	temp=list1[min[1]];	
+//	alert(temp);
+	Path.push(Pos[temp]);
+var newlist=list1.remove(min[1]);
+//alert(list);
+	dfs(temp,newlist);
 	
 }
 

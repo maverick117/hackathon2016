@@ -190,12 +190,12 @@ td.cl2{	height: 60px;
    <table style="">
 <tr>
 <th></th>
-<th>1</th>
-<th>2</th>
-<th>3</th></tr>
+<th>Status</th>
+<th>FlowRate</th>
+<th></th></tr>
 <tr>
 <td class="cl1" >Status</td>
-<td class="cl1" id="1">1</td>
+<td class="cl1" id="0x01Status">1</td>
 <td class="cl1" >-</td>
 <td class="cl1">-</td></tr>
 <tr>
@@ -206,12 +206,12 @@ td.cl2{	height: 60px;
 <td class="cl2">-</td></tr>
 
 <tr>
-<td class="cl1"></td>
+<td class="cl1">Temperature</td>
 <td class="cl1" id="3">1</td>
 <td class="cl1" >-</td>
 <td class="cl1">-</td></tr>
 <tr>
-<td class="cl2">1</td>
+<td class="cl2">Humidity</td>
 <td class="cl2" id="4">1</td>
 <td class="cl2">-</td>
 <td class="cl2">-</td></tr>
@@ -228,20 +228,25 @@ function init()
 }
 function Run()
 {
-var Data={id:0,volume:0};
+var items=[];
 	//document.getElementById("1").innerHTML="b";
 	
-	 $.getJSON("./stat.json",function(result){
+	 $.getJSON("./data.json",function(data){
+		 items=[];
+			$.each( data, function( key, val ) {
+    			items.push(val);
+  			});
+			 //alert(items[0].id);
+	//alert(items[0].emergency_type);
+	for(var i=0;i<items.length;i++)
+	{
 
-		//	 document.getElementById("1").innerHTML="c";
-			 Data.id=result.id;
-			Data.package_type=result.package_type;
-		  	 Data.volume=result.volume;
-			Data.state_code=result.state_code;
-			Data.rate=result.rate;
+		document.getElementById(items[0].id+"Status").innerHTML=items[0].emergency_type;
+	}
+			 
   	  });
 	//Data=ParseJson(json);
-	document.getElementById("1").innerHTML=Data.id;
+
 //	setTimeout("Run()",100);
 
 }
