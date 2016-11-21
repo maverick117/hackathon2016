@@ -8,10 +8,16 @@ float index = 0;
 long cm,duration;
 int bufferTrash[11]={};
 int bufferArray[11]={};
+int fire = 4;
+int isFire;
+#include <dht.h>
+dht DHT;
+#define DHT11_PIN 7
 
 void setup()
 {
   pinMode(sensorPin,INPUT);
+  pinMode(fire, INPUT);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   pinMode(buzzerPin, OUTPUT);
@@ -36,9 +42,7 @@ void loop()
       if(judgeTrash){
         bufferArray[i] = bufferArray[i-1] + 1;
         if (bufferArray[i] > 6){
-          digitalWrite(buzzerPin, HIGH);
-          delay(100);
-          digitalWrite(buzzerPin, LOW);
+          buzzer();
         }else{
           delay(100);
         }
@@ -60,8 +64,21 @@ void loop()
     if (bufferTrash[10] < 7){
         judgeTrash = false;
     }
-    communicate(judgeTrash,index);
 
+    communicate(judgeTrash,index);
+    int chk = DHT.read11(DHT11_PIN);
+    isFire = digitalRead(fire);
+    if (isFire == 1){
+      Serial.print(80.00);
+      buzzer();
+      buzzer();
+      buzzer();
+    }else{
+    Serial.print(DHT.temperature);
+    }
+    Serial.print(";");
+    Serial.println(DHT.humidity);
+ 
 }
 
 bool find_trash()
@@ -84,7 +101,7 @@ bool find_trash()
     //Serial.println(duration);
   // convert the time into a distance
   cm = (duration/2) / 29.4;
-  if (cm<50){
+  if (cm<40){
     return true;
   }else{
     return false;
@@ -101,6 +118,12 @@ bool is_passerby()
   }
 }
 
+void buzzer()
+{
+    digitalWrite(buzzerPin, HIGH);
+    delay(100);
+    digitalWrite(buzzerPin, LOW);  
+}
 
 void communicate(bool judgeTrash,int index)
 {
@@ -110,5 +133,6 @@ void communicate(bool judgeTrash,int index)
     Serial.print("False;");
   }
   //Serial.print(crowd);
-  Serial.println(index);
+  Serial.print(index);
+  Serial.print(";");
 }
