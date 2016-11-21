@@ -23,22 +23,23 @@
 
 from __future__ import print_function
 import time, sys, signal, atexit
-from upm import pyupm_rpr220 as upmRpr220
+from upm import pyupm_otp538u as upmOtp538u
 
 def main():
-    # This example uses a simple method to determine current status
+    # analog voltage, usually 3.3 or 5.0
+    OTP538U_AREF = 5.0
 
-    # Instantiate an RPR220 digital pin D2
-    # This was tested on the Grove IR Reflective Sensor
-    myReflectiveSensor = upmRpr220.RPR220(5)
+    # Instantiate a OTP538U on analog pins A0 and A1
+    # A0 is used for the Ambient Temperature and A1 is used for the
+    # Object temperature.
+    myTempIR = upmOtp538u.OTP538U(2, 3, OTP538U_AREF)
 
     ## Exit handlers ##
     # This stops python from printing a stacktrace when you hit control-C
     def SIGINTHandler(signum, frame):
         raise SystemExit
 
-    # This lets you run code on exit,
-    # including functions from myReflectiveSensor
+    # This lets you run code on exit, including functions from myTempIR
     def exitHandler():
         print("Exiting")
         sys.exit(0)
@@ -48,12 +49,15 @@ def main():
     signal.signal(signal.SIGINT, SIGINTHandler)
 
     while(1):
-        if (myReflectiveSensor.blackDetected()):
-            print("Black detected")
-        else:
-            print("Black NOT detected")
+        #outputStr = ("Ambient temp: {0}"
+        #" C, Object temp: {1}"
+        #" C".format(myTempIR.ambientTemperature(),
+        #myTempIR.objectTemperature()))
+        #print(outputStr)
 
-        time.sleep(.1)
+        print(myTempIR.ambientTemperature())
+        print(myTempIR.objectTemperature())
+        time.sleep(1)
 
 if __name__ == '__main__':
     main()

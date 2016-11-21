@@ -1,5 +1,5 @@
-#!/usr/bin/python
-# Author: Brendan Le Foll <brendan.le.foll@intel.com>
+from __future__ import print_function
+# Author: Sarah Knepper <sarah.knepper@intel.com>
 # Copyright (c) 2014 Intel Corporation.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -21,33 +21,20 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from upm import pyupm_i2clcd as lcd
 import time
+from upm import pyupm_grove as grove
 
 def main():
-    # Initialize Jhd1313m1 at 0x3E (LCD_ADDRESS) and 0x62 (RGB_ADDRESS)
-    myLcd = lcd.Jhd1313m1(0, 0x3E, 0x62)
+    # Create the button object using GPIO pin 0
+    button = grove.GroveButton(4)
 
-    myLcd.setCursor(0,0)
-    # RGB Blue
-    myLcd.setColor(0, 0, 255)
-    myLcd.write('Blue')
-    time.sleep(3)
-    # RGB Red
-    myLcd.clear()
-    myLcd.setColor(255, 0, 0)
-    myLcd.setCursor(0,0)
-    myLcd.write('Red')
-    time.sleep(3)
-    # RGB Green
-    myLcd.setColor(0,255,0)
-    myLcd.clear()
-    myLcd.write('OK         ')
-    time.sleep(3)
-    #myLcd.clear()
-    #myLcd.setColor(255,185,15)
-    #myLcd.write('Warning')
-    #time.sleep(5)
+    # Read the input and print, waiting one second between readings
+    while 1:
+        print(button.name(), ' value is ', button.value())
+        time.sleep(1)
+
+    # Delete the button object
+    del button
+
 if __name__ == '__main__':
     main()
-

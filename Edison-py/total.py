@@ -41,17 +41,28 @@ myDistInterrupter1 = upmRfr359f.RFR359F(2)
 myDistInterrupter2 = upmRfr359f.RFR359F(3)
 myAlcoholSensor = upmMq303a.MQ303A(0, 1)
 button = grove.GroveButton(4)
-buzzer = upmBuzzer.Buzzer(6)
 #myReflectiveSensor1 = upmRpr220.RPR220(4)
 #myReflectiveSensor2 = upmRpr220.RPR220(5)
 warmed=False
 space=' '*16
 starttime=time.time()
 btnstate=False
+try:
+    with open(os.path.join(sys.path[0],'stat.json')) as data_file:
+        data = json.load(data_file)
+except IOError:
+    with open(os.path.join(sys.path[0],'stat.json'),'w') as data_file:
+        json.dump({},data_file)
 
 try:
     while 1:
         response = ser.readline()
+        try:
+            with open(os.path.join(sys.path[0],'stat.json'),'w') as data_file:
+                print data
+                json.dump(data,data_file)
+        except Exception as e:
+            print 'err',e
         try:
             with open(os.path.join(sys.path[0],'stat.json')) as data_file:
                 data = json.load(data_file)
@@ -66,18 +77,12 @@ try:
             continue
         if int(float(res[2]))>50:
                 ChangeDisplay1('red','HighTemp')
-                data['emergency_type']='fire'
-                for i in range(10):
-                    print buzzer.playSound(upmBuzzer.LA, 100000)
-                    time.sleep(0.01)
+                data['emergency_type']='FIRE'
                 continue
         if btnstate:
             if not button.value():
                 ChangeDisplay1('red','Help')
-                data['emergency_type']='help'
-                for i in range(10):
-                    print buzzer.playSound(upmBuzzer.LA, 100000)
-                    time.sleep(0.01)
+                data['emergency_type']='HELP'
                 continue
             else:
                 btnstate=False
@@ -85,10 +90,7 @@ try:
         else:
             if button.value():
                 ChangeDisplay1('red','Help')
-                data['emergency_type']='help'
-                for i in range(10):
-                    print buzzer.playSound(upmBuzzer.LA, 100000)
-                    time.sleep(0.01)
+                data['emergency_type']='HELP'
                 btnstate=True
                 continue
 
@@ -114,11 +116,5 @@ try:
         data['temp']=int(float(res[2]))
         data['humi']=int(float(res[3]))
 
-        try:
-            with open(os.path.join(sys.path[0],'stat.json'),'w') as data_file:
-                print data
-                json.dump(data,data_file)
-        except Exception as e:
-            print 'err',e
 except KeyboardInterrupt:
     ser.close()
