@@ -14,6 +14,7 @@ PORT_NUMBER = 8080
 class myHandler(BaseHTTPRequestHandler):
 	
 	#Handler for the GET requests
+
 	def do_GET(self):
 		if self.path=="/":
 			self.path="/index.html"
@@ -39,9 +40,15 @@ class myHandler(BaseHTTPRequestHandler):
 			if self.path.endswith(".html"):
 				mimetype='text/html'
 				sendReply = True
+                        if self.path.endswith(".json"):
+                                mimetype='application/json'
+                                sendReply = True
 			if self.path.endswith(".jpg"):
 				mimetype='image/jpg'
 				sendReply = True
+                        if self.path.endswith(".png"):
+                                mimetype='image/png'
+                                sendReply = True
 			if self.path.endswith(".gif"):
 				mimetype='image/gif'
 				sendReply = True
